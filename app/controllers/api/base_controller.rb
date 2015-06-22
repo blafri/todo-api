@@ -10,7 +10,7 @@ module Api
     # Returns the user object for the credentials supplied or false if the
     #         credentials are not valid
     def authenticated?
-      authenticate_with_http_basic do |username, password|
+      authenticate_or_request_with_http_basic do |username, password|
         user = User.find_by_user_name(username)
         user && user.authenticate(password)
       end
