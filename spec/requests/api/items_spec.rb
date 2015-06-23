@@ -17,6 +17,14 @@ RSpec.describe 'Items', type: :request do
       expect(response).to have_http_status(201)
       expect(json_response['item']['name']).to eq('test item')
     end
+
+    it 'items can be deleted successfully' do
+      item = create(:item, list: list)
+      delete api_item_path(item), {}, @env
+
+      expect(list.items.count).to eq(0)
+      expect(response).to have_http_status(204)
+    end
   end
 
   context 'without authentication' do

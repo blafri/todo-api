@@ -34,6 +34,14 @@ RSpec.describe 'Users', type: :request do
       expect(response).to have_http_status(201)
       expect(json_response['user']['user_name']).to eq('test')
     end
+
+    it 'can delete a user' do
+      user2 = create(:user)
+      delete api_user_path(user2), {}, @env
+
+      expect(User.count).to eq(1)
+      expect(response).to have_http_status(204)
+    end
   end
 
   context 'without authentication' do

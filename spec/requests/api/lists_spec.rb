@@ -16,6 +16,14 @@ RSpec.describe 'Lists', type: :request do
       expect(response).to have_http_status(201)
       expect(json_response['list']['name']).to eq('test list')
     end
+
+    it 'lists can be deleted' do
+      list = create(:list, user: user)
+      delete api_list_path(list), {}, @env
+
+      expect(user.lists.count).to eq(0)
+      expect(response).to have_http_status(204)
+    end
   end
 
   context 'without authentication' do

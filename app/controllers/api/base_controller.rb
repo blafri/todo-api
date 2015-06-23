@@ -15,5 +15,21 @@ module Api
         user && user.authenticate(password)
       end
     end
+
+    # Internal: Sends the appropriate http response when an object is not found
+    def object_not_found
+      render json: {}, status: :not_found
+    end
+
+    # Internal: Returns JSON stating the destroy was successful
+    def destroy_successful
+      render json: {}, status: :no_content
+    end
+
+    # Internal: Returns JSON stating that the object was found but there was a
+    #           problem destroying it.
+    def destroy_error
+      render json: {}, status: :internal_server_error
+    end
   end
 end
