@@ -3,7 +3,20 @@ module Api
   class BaseController < ApplicationController
     skip_before_action :verify_authenticity_token
 
+    rescue_from Pundit::NotAuthorizedError, with: :user_not_authorized
+    rescue_from ActiveRecord::RecordNotFound, with: :object_not_found
+
+    def current_user
+      @current_user if defined?(@current_user)
+    end
+
     private
+
+    # Internal: Informs the user that they are not allowed to perform the action
+    #           by returning a 403 forbidden error
+    def user_not_authorized
+      render json: {}, status: :forbidden
+    end
 
     # Internal: Checks if the credentials the user provided for login are valid
     #
@@ -11,8 +24,8 @@ module Api
     #         credentials are not valid
     def authenticated?
       authenticate_or_request_with_http_basic do |username, password|
-        user = User.find_by_user_name(username)
-        user && user.authenticate(password)
+        @current_user = User.find_by_user_name(username)
+        @current_user && @current_user.authenticate(password)
       end
     end
 
