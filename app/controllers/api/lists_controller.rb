@@ -1,8 +1,6 @@
 module Api
   # Public: lists controller
   class ListsController < Api::BaseController
-    before_action :authenticated?
-
     after_action :verify_authorized, except: [:index]
 
     def index

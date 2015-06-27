@@ -1,8 +1,6 @@
 module Api
   # Public: Users controller
   class UsersController < Api::BaseController
-    before_action :authenticated?
-
     after_action :verify_authorized
 
     def index

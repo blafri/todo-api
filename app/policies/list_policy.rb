@@ -12,6 +12,7 @@ class ListPolicy < ApplicationPolicy
     record.user_id == user.id
   end
 
+  # Pulic: Scope for list policy
   class Scope < Scope
     def resolve
       scope.lists_for(user)

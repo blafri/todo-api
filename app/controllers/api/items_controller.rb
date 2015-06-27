@@ -1,8 +1,6 @@
 module Api
   # Public: items controller
   class ItemsController < Api::BaseController
-    before_action :authenticated?
-
     after_action :verify_authorized
 
     def create
