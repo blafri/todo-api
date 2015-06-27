@@ -34,6 +34,24 @@ RSpec.describe 'Lists', type: :request do
         expect(response).to have_http_status(403)
       end
     end
+
+    context 'view lists' do
+      before do
+        create(:list, user: user)
+        create(:list)
+      end
+
+      it 'users can view their lists' do
+        get api_lists_path, {}, @env
+
+        expect(response).to have_http_status(200)
+        expect(json_response['lists'].count).to eq(1)
+      end
+
+      xit 'users cannot view someone elses lists' do
+        
+      end
+    end
   end
 
   context 'without authentication' do

@@ -11,4 +11,10 @@ class ListPolicy < ApplicationPolicy
   def list_owner?
     record.user_id == user.id
   end
+
+  class Scope < Scope
+    def resolve
+      scope.lists_for(user)
+    end
+  end
 end

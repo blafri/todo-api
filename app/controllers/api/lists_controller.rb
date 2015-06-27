@@ -3,7 +3,12 @@ module Api
   class ListsController < Api::BaseController
     before_action :authenticated?
 
-    after_action :verify_authorized
+    after_action :verify_authorized, except: [:index]
+
+    def index
+      lists = List.lists_for(current_user)
+      render json: lists
+    end
 
     def create
       list = current_user.lists.build(list_params)

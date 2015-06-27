@@ -7,6 +7,21 @@ describe ListPolicy do
   let(:list) { build(:list) }
   let(:my_list) { build(:list, user: user) }
 
+  permissions ".scope" do
+    before do
+      user.save
+      list.save
+      my_list.save
+    end
+
+    it 'only shows my lists' do
+      lists = Pundit.policy_scope!(user, List)
+
+      expect(lists.count).to eq(1)
+      expect(lists.first.name).to eq(my_list.name)
+    end
+  end
+
   permissions :create? do
     it 'allows you to create a list if you are the list owner' do
       expect(subject).to permit(user, my_list)
