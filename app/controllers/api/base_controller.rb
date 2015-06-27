@@ -19,13 +19,12 @@ module Api
     end
 
     # Internal: Checks if the credentials the user provided for login are valid
-    #
-    # Returns the user object for the credentials supplied or false if the
-    #         credentials are not valid
     def authenticated?
       authenticate_or_request_with_http_basic do |username, password|
-        @current_user = User.find_by_user_name(username)
-        @current_user && @current_user.authenticate(password)
+        user = User.find_by_user_name(username)
+        return false unless (user && user.authenticate(password))
+        @current_user = user
+        true
       end
     end
 
