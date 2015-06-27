@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150617211151) do
+ActiveRecord::Schema.define(version: 20150625141235) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -35,10 +35,11 @@ ActiveRecord::Schema.define(version: 20150617211151) do
   add_index "lists", ["user_id"], name: "index_lists_on_user_id", using: :btree
 
   create_table "users", force: :cascade do |t|
-    t.string   "user_name",       null: false
-    t.string   "password_digest", null: false
-    t.datetime "created_at",      null: false
-    t.datetime "updated_at",      null: false
+    t.string   "user_name",                            null: false
+    t.string   "password_digest",                      null: false
+    t.datetime "created_at",                           null: false
+    t.datetime "updated_at",                           null: false
+    t.string   "role",            default: "standard"
   end
 
   add_index "users", ["user_name"], name: "index_users_on_user_name", unique: true, using: :btree
