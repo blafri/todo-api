@@ -2,10 +2,13 @@ module Api
   # Public: lists controller
   class ListsController < Api::BaseController
     before_action :authenticated?
-    before_action :url_args
+
+    after_action :verify_authorized
 
     def create
-      list = @user.lists.build(list_params)
+      list = current_user.lists.build(list_params)
+      authorize list
+
       if list.save
         render json: list, status: :created
       else
@@ -14,14 +17,20 @@ module Api
       end
     end
 
-    private
+    def destroy
+      list = List.find(params[:id])
+      authorize list
 
-    # Internal: Sets instance variables for parameters passed in the URI string
-    def url_args
-      @user = User.find(params[:user_id]) if params.include?(:user_id)
-      @list = List.find(params[:id]) if params.include?(:id)
+      if list.destroy
+        destroy_successful
+      else
+        destroy_error
+      end
     end
 
+    private
+
+    # Iternal: Permits parameters that the user is allowed to set
     def list_params
       params.require(:list).permit(:name)
     end

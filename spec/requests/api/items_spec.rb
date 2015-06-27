@@ -17,6 +17,24 @@ RSpec.describe 'Items', type: :request do
       expect(response).to have_http_status(201)
       expect(json_response['item']['name']).to eq('test item')
     end
+
+    context 'delete items' do
+      it 'is successful if you are the owner' do
+        item = create(:item, list: list)
+        delete api_item_path(item), {}, @env
+
+        expect(list.items.count).to eq(0)
+        expect(response).to have_http_status(204)
+      end
+
+      it 'is unsuccessful if you are not the owner' do
+        item = create(:item)
+        delete api_item_path(item), {}, @env
+
+        expect(Item.where(id: item.id).empty?).to eq(false)
+        expect(response).to have_http_status(403)
+      end
+    end
   end
 
   context 'without authentication' do

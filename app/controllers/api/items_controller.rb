@@ -2,10 +2,13 @@ module Api
   # Public: items controller
   class ItemsController < Api::BaseController
     before_action :authenticated?
-    before_action :url_args
+
+    after_action :verify_authorized
 
     def create
-      item = @list.items.build(item_params)
+      item = current_user.lists.find(params[:list_id]).items.build(item_params)
+      authorize item
+
       if item.save
         render json: item, status: :created
       else
@@ -14,14 +17,20 @@ module Api
       end
     end
 
-    private
+    def destroy
+      item = Item.find(params[:id])
+      authorize item
 
-    # Internal: Sets instance variables for parameters passed in the URI string
-    def url_args
-      @list = List.find(params[:list_id]) if params.include?(:list_id)
-      @item = Item.find(params[:id]) if params.include?(:id)
+      if item.destroy
+        destroy_successful
+      else
+        destroy_error
+      end
     end
 
+    private
+
+    # Iternal: Permits parameters that the user is allowed to set
     def item_params
       params.require(:item).permit(:name)
     end
