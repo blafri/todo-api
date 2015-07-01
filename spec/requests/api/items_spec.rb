@@ -3,6 +3,8 @@ require 'rails_helper'
 RSpec.describe 'Items', type: :request do
   let(:user) { create(:user) }
   let(:list) { create(:list, user: user) }
+  let(:my_item) { create(:item, list: list) }
+  let(:item) { create(:item) }
 
   context 'with authentication' do
     before do
@@ -20,18 +22,34 @@ RSpec.describe 'Items', type: :request do
 
     context 'delete items' do
       it 'is successful if you are the owner' do
-        item = create(:item, list: list)
-        delete api_item_path(item), {}, @env
+        delete api_item_path(my_item), {}, @env
 
         expect(list.items.count).to eq(0)
         expect(response).to have_http_status(204)
       end
 
       it 'is unsuccessful if you are not the owner' do
-        item = create(:item)
         delete api_item_path(item), {}, @env
 
         expect(Item.where(id: item.id).empty?).to eq(false)
+        expect(response).to have_http_status(403)
+      end
+    end
+
+    context 'update items' do
+      it 'is successful if you are the owner' do
+        item_update = { item: { completed: true } }
+        patch api_item_path(my_item), item_update, @env
+
+        expect(Item.first.completed).to eq(true)
+        expect(response).to have_http_status(200)
+        expect(json_response['item']['completed']).to eq(true)
+      end
+
+      it 'is unsuccessful if you are not the owner' do
+        item_update = { item: { completed: true } }
+        patch api_item_path(item), item_update, @env
+
         expect(response).to have_http_status(403)
       end
     end

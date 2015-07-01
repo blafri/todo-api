@@ -18,6 +18,16 @@ describe ItemPolicy do
     end
   end
 
+  permissions :update? do
+    it 'permits the item to be updated if the user is the owner' do
+      expect(subject).to permit(user, user_item)
+    end
+
+    it 'denies the item to be updated if the user is not the owner' do
+      expect(subject).not_to permit(user, item)
+    end
+  end
+
   permissions :destroy? do
     it 'permits item deletion if you are the item owner' do
       expect(subject).to permit(user, user_item)

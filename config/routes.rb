@@ -3,9 +3,7 @@ Rails.application.routes.draw do
     resources :users
 
     resources :lists, except: [:new, :edit] do
-      resources :items, only: [:create]
+      resources :items, shallow: true, only: [:create, :destroy, :update]
     end
-
-    resources :items, only: [:destroy]
   end
 end

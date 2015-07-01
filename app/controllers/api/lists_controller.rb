@@ -22,7 +22,7 @@ module Api
       if new_list.save
         render json: new_list, status: :created
       else
-        render json: { errors: list.errors.full_messages },
+        render json: { errors: new_list.errors.full_messages },
                status: :unprocessable_entity
       end
     end
