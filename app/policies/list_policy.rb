@@ -1,15 +1,19 @@
 # Public: Authorization policy for list objects
 class ListPolicy < ApplicationPolicy
+  def index?
+    user.present?
+  end
+
   def create?
-    list_owner?
+    record.user_id == user.id
+  end
+
+  def update?
+    create?
   end
 
   def destroy?
     create?
-  end
-
-  def list_owner?
-    record.user_id == user.id
   end
 
   # Pulic: Scope for list policy

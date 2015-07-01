@@ -9,6 +9,11 @@ RSpec.describe List, type: :model do
     it { should validate_presence_of(:user) }
     it { should belong_to(:user) }
     it { should have_many(:items) }
+
+    it do
+      should validate_inclusion_of(:permission)
+        .in_array(%w(private viewable open))
+    end
   end
 
   context 'dependent records in items table' do
